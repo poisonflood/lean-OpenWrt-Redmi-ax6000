@@ -5,25 +5,29 @@ set -ex
 export REPO_URL="https://github.com/coolsnowwolf/lede.git"
 export REPO_BRANCH="master"
 export TZ="Europe/Paris"
-export WORK_DIR="$HOME/openwrt-build"
+#export WORK_DIR="$HOME/openwrt-build"
+export WORK_DIR="$HOME/git/kernels/lean-OpenWrt-Redmi-ax6000"
 export OPENWRT_DIR="$WORK_DIR/openwrt"
 export OUTPUT_DIR="$WORK_DIR/output"
 
-# Initialize environment
-sudo timedatectl set-timezone "$TZ"
-sudo apt-get update -y
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y universe multiverse
-sudo apt-get update -y
+# https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#debian
+[[ `uname -n` == "ubuntu" ]] && {
+sudo apt update
+sudo apt install build-essential clang flex bison g++ gawk \
+    gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+    python3-setuptools rsync swig unzip zlib1g-dev file wget
+}
 
-# Install dependencies
-sudo apt-get install -y \
-    build-essential rsync asciidoc binutils bzip2 gawk gettext git libncurses5-dev \
-    patch python3 unzip zlib1g-dev lib32gcc-s1 subversion flex uglifyjs gcc-multilib \
-    p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto \
-    qemu-utils upx-ucl libelf-dev autoconf automake libtool device-tree-compiler \
-    g++-multilib antlr3 gperf wget ccache curl swig coreutils vim nano python3-pip \
-    haveged lrzsz scons libpython3-dev zstd dwarves llvm clang lldb lld aria2 libbpf-dev
+# https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#gentoo
+[[ `uname -n` == "gentoo" ]] && {
+sudo emerge --sync --quiet
+sudo emerge -avuDN app-arch/{bzip2,sharutils,unzip,zip} sys-process/time \
+                   app-text/asciidoc \
+                   dev-libs/{libusb-compat,libxslt,openssl} dev-util/intltool \
+                   dev-vcs/{git,mercurial} net-misc/{rsync,wget} \
+                   sys-apps/util-linux sys-devel/{bc,bin86,dev86} \
+                   sys-libs/{ncurses,zlib} virtual/perl-ExtUtils-MakeMaker
+}
 
 # Setup build environment
 if [ ! -d "$WORK_DIR" ]; then
