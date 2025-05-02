@@ -11,9 +11,9 @@
 ###############Name##############
 name: Redmi-AX6000-build-lean
 
-#on:
-#  repository_dispatch:
-#  workflow_dispatch:
+on:
+  repository_dispatch:
+  workflow_dispatch:
 #  schedule:
 #    - cron: 0 16 * * *
 
