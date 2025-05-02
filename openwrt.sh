@@ -11,17 +11,17 @@ export OPENWRT_DIR="$WORK_DIR/openwrt"
 export OUTPUT_DIR="$WORK_DIR/output"
 
 # https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#debian
-[[ `uname -n` == "ubuntu" ]] && {
+[[ `uname -a` =~ "ubuntu" ]] && {
 sudo apt update
-sudo apt install build-essential clang flex bison g++ gawk \
+sudo apt -y install build-essential clang flex bison g++ gawk \
     gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
     python3-setuptools rsync swig unzip zlib1g-dev file wget
 }
 
 # https://openwrt.org/docs/guide-developer/toolchain/install-buildsystem#gentoo
-[[ `uname -n` == "gentoo" ]] && {
+[[ `uname -a` =~ "gentoo" ]] && {
 sudo emerge --sync --quiet
-sudo emerge -avuDN app-arch/{bzip2,sharutils,unzip,zip} sys-process/time \
+sudo emerge -vuDN app-arch/{bzip2,sharutils,unzip,zip} sys-process/time \
                    app-text/asciidoc \
                    dev-libs/{libusb-compat,libxslt,openssl} dev-util/intltool \
                    dev-vcs/{git,mercurial} net-misc/{rsync,wget} \
@@ -39,9 +39,9 @@ cd "$WORK_DIR"
 if [ ! -d "$OPENWRT_DIR" ]; then
     git clone "$REPO_URL" -b "$REPO_BRANCH" "$OPENWRT_DIR"
 fi
+cd "$OPENWRT_DIR"
 
 # Apply custom configurations
-cd "$OPENWRT_DIR"
 [ -f "$WORK_DIR/feeds.conf.default" ] && cp "$WORK_DIR/feeds.conf.default" .
 [ -f "$WORK_DIR/diy-part1.sh" ] && {
     chmod +x "$WORK_DIR/diy-part1.sh"
